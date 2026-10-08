@@ -1,1 +1,48 @@
-
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Drzewo genealogiczne rodziny Kotuła</title>
+<style>body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#101114;color:#eee}header{padding:22px 18px;text-align:center;background:#181a20;position:sticky;top:0;z-index:5}h1{margin:0 0 6px;font-size:25px}header p{margin:0;color:#aaa;font-size:14px}.wrap{max-width:1400px;margin:auto;padding:18px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.toolbar button{border:1px solid #444;background:#22252d;color:#eee;border-radius:9px;padding:9px 12px;cursor:pointer}.toolbar button.active{background:#eee;color:#111}.tree{overflow:auto;border:1px solid #30333b;border-radius:14px;background:#15171c;padding:20px}.levels{display:flex;gap:34px;align-items:flex-start;min-width:1100px}.level{min-width:220px}.level h2{font-size:14px;color:#aaa;text-align:center;margin:0 0 12px}.card{background:#20232a;border:1px solid #414550;border-radius:12px;padding:12px;margin:10px 0;cursor:pointer;transition:.2s}.card:hover,.card.sel{border-color:#fff;transform:translateY(-2px)}.name{font-weight:700}.dates{font-size:12px;color:#aaa;margin-top:4px}.tag{display:inline-block;font-size:10px;margin-top:7px;padding:3px 6px;border-radius:5px;background:#343842;color:#ccc}.info{margin-top:15px;padding:15px;border-radius:12px;background:#181a20;border:1px solid #30333b;min-height:60px}.note{color:#aaa;font-size:13px}.hidden{display:none}</style></head>
+<body><header><h1>Drzewo genealogiczne rodziny Kotuła</h1><p>Kotuła / Kotulla oraz połączone gałęzie rodzinne</p></header><main class="wrap"><div class="toolbar" id="filters"></div><div class="tree"><div class="levels" id="tree"></div></div><div class="info" id="info"><div class="note">Kliknij osobę, aby zobaczyć szczegóły.</div></div></main>
+<script>
+const people=[
+{id:'ignacy',name:'Ignacy Kotulla',dates:'daty nieznane',branch:'kotula',gen:1,rel:'mąż Anny Motzko; rodzice Johana Kotulli'},
+{id:'annaM',name:'Anna Motzko',dates:'daty nieznane',branch:'kotula',gen:1,rel:'żona Ignacego Kotulli'},
+{id:'johan',name:'Johan Kotulla',dates:'18.06.1875 – 04.07.1940',branch:'kotula',gen:2,rel:'syn Ignacego Kotulli i Anny Motzko; mąż Joanny Kaniuth'},
+{id:'joanna',name:'Joanna Kaniuth',dates:'28.10.1880 – 16.04.1969',branch:'kotula',gen:2,rel:'żona Johana Kotulli'},
+{id:'stanislaw',name:'Stanisław Kotuła',dates:'16.11.1902 – 03.11.1965 [niepewne]',branch:'kotula',gen:3,rel:'syn Johana i Joanny; partner/żona Monika'},
+{id:'monika',name:'Monika',dates:'01.05.1908 – 20.09.1998',branch:'kotula',gen:3,rel:'partnerka/żona Stanisława Kotuły; nazwisko nieznane'},
+{id:'annaMaria',name:'Anna Maria Kotuła',dates:'05.07.1904 – 02.06.1908',branch:'kotula',gen:3,rel:'córka Johana i Joanny'},
+{id:'edwin',name:'Edwin Kotuła',dates:'04.03.1906 – 16.10.1965',branch:'kotula',gen:3,rel:'syn Johana i Joanny; mąż Małgorzaty Mildner i Haliny Siwek'},
+{id:'leon',name:'Leon Kotuła',dates:'24.04.1908 – 22.10.1962',branch:'kotula',gen:3,rel:'syn Johana i Joanny; mąż Hildegardy Poschbeck'},
+{id:'hildegarda',name:'Hildegarda Poschbeck',dates:'27.04.1920 – 28.06.2001',branch:'kotula',gen:3,rel:'żona Leona Kotuły'},
+{id:'wilhelm',name:'Wilhelm Kotuła',dates:'15.03.1910 – data śmierci nieznana',branch:'kotula',gen:3,rel:'syn Johana i Joanny; związany z Käthe/Käthe Kucharski'},
+{id:'bronislawa',name:'Bronisława Kotuła',dates:'13.12.1911 – 11.05.1993',branch:'kotula',gen:3,rel:'córka Johana i Joanny; żona Hieronima Ślusarskiego'},
+{id:'zenon',name:'Zenon Kotuła',dates:'03.01.1938, Katowice – 07.08.2024',branch:'kotula',gen:4,rel:'syn Edwina i Małgorzaty Mildner; ojciec Ryszarda'},
+{id:'henryk',name:'Henryk Kotuła',dates:'1932 – 1932',branch:'kotula',gen:4,rel:'starszy brat Zenona; zmarł jako niemowlę'},
+{id:'mildner',name:'Małgorzata Mildner',dates:'16.03.1911 – 21.04.1952',branch:'mildner',gen:4,rel:'pierwsza żona Edwina; matka Henryka i Zenona'},
+{id:'halina',name:'Halina Siwek',dates:'04.03.1914 – 28.07.1965',branch:'kotula',gen:4,rel:'druga żona Edwina'},
+{id:'danuta',name:'Danuta Kotuła, née Dudek',dates:'20.01.1947 – 21.02.2023',branch:'dudek',gen:5,rel:'żona Zenona; córka Władysława i Eugenii Dudek'},
+{id:'krystynaLoska',name:'Krystyna Loska',dates:'09.09.1943 – data śmierci nieznana',branch:'loska',gen:5,rel:'pierwsza żona/partnerka Zenona; siostra Gizeli'},
+{id:'krzysztof',name:'Krzysztof Kotuła',dates:'24.09.1965',branch:'loska',gen:6,rel:'syn Zenona Kotuły i Krystyny Loski'},
+{id:'ryszard',name:'Ryszard Kotuła',dates:'29.05.1986',branch:'kotula',gen:7,rel:'syn Zenona Kotuły i Danuty; mąż Wioletty'},
+{id:'wioletta',name:'Wioletta Kotuła, née Seweryn',dates:'10.08.1988',branch:'seweryn',gen:7,rel:'żona Ryszarda; córka Dariusza i Ewy Moś'},
+{id:'julia',name:'Julia',dates:'15.05.2019',branch:'seweryn',gen:8,rel:'córka Ryszarda i Wioletty'},
+{id:'jakub',name:'Jakub',dates:'05.06.2020',branch:'seweryn',gen:8,rel:'syn Ryszarda i Wioletty'},
+{id:'dariusz',name:'Dariusz Seweryn',dates:'1965',branch:'seweryn',gen:6,rel:'ojciec Wioletty i Łukasza'},
+{id:'ewa',name:'Ewa Moś',dates:'01.05, rok nieznany',branch:'seweryn',gen:6,rel:'matka Wioletty i Łukasza'},
+{id:'lukasz',name:'Łukasz Seweryn',dates:'ok. 1991 [niepewne]',branch:'seweryn',gen:7,rel:'brat Wioletty'},
+{id:'wlady',name:'Władysław Dudek',dates:'13.05.1920 – 24.11.1990, Balin',branch:'dudek',gen:4,rel:'mąż Eugenii Dudek'},
+{id:'eugenia',name:'Eugenia Dudek, née Górczewska',dates:'07.06.1919 – 14.02.1991, Balin',branch:'dudek',gen:4,rel:'żona Władysława Dudka'},
+{id:'bogumila',name:'Bogumiła Kielesińska, née Dudek',dates:'12.03.1951 – 26.12.2007',branch:'dudek',gen:5,rel:'córka Władysława i Eugenii; mąż Marian Kielesiński; bezdzietna'},
+{id:'wieslawa',name:'Wiesława Górczewska, née Dudek',dates:'19.07.1947',branch:'dudek',gen:5,rel:'córka Władysława i Eugenii; mąż Paweł; dzieci Adrian i Joanna'},
+{id:'janLoska',name:'Jan Loska',dates:'daty nieznane',branch:'loska',gen:4,rel:'mąż Gertrudy Siwik'},
+{id:'gertrudaSiwik',name:'Gertruda Siwik',dates:'18.05.1920 – 30.05.2000',branch:'loska',gen:4,rel:'żona Jana Loski; matka Krystyny i Gizeli'},
+{id:'gizela',name:'Gizela Loska',dates:'daty nieznane',branch:'loska',gen:5,rel:'siostra Krystyny Loskiej'},
+{id:'christian',name:'Christian Poschbeck',dates:'15.12.1946',branch:'kotula',gen:4,rel:'syn Leona Kotuły i Hildegardy Poschbeck; nazwisko po matce'},
+{id:'hieronim',name:'Hieronim Ślusarski',dates:'16.09.1910 – 06.08.2000',branch:'kotula',gen:3,rel:'mąż Bronisławy Kotuły'},
+{id:'edyta',name:'Edyta Ślusarska',dates:'data urodzenia nieznana',branch:'kotula',gen:4,rel:'córka Bronisławy i Hieronima'}
+];
+const labels={all:'Całe drzewo',kotula:'Kotuła / Kotulla',mildner:'Mildner / Teodor',dudek:'Dudek / Górczewska',loska:'Loska / Siwik',seweryn:'Seweryn'};let filter='all';
+const filters=document.getElementById('filters');Object.entries(labels).forEach(([k,v])=>{let b=document.createElement('button');b.textContent=v;b.className=k==='all'?'active':'';b.onclick=()=>{filter=k;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()};filters.appendChild(b)});
+function render(){let t=document.getElementById('tree');t.innerHTML='';let shown=people.filter(p=>filter==='all'||p.branch===filter);for(let g=1;g<=8;g++){let col=document.createElement('section');col.className='level';col.innerHTML='<h2>Pokolenie '+g+'</h2>';shown.filter(p=>p.gen===g).forEach(p=>{let c=document.createElement('div');c.className='card';c.innerHTML='<div class="name">'+p.name+'</div><div class="dates">'+p.dates+'</div><span class="tag">'+labels[p.branch]+'</span>';c.onclick=()=>{document.querySelectorAll('.card').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');document.getElementById('info').innerHTML='<strong>'+p.name+'</strong><br><span class="note">'+p.dates+'</span><br><span class="note">'+p.rel+'</span>'};col.appendChild(c)});if(col.children.length>1)t.appendChild(col)} }
+render();
+</script></body></html>
